@@ -1,0 +1,24 @@
+cabal-version: 2.2
+
+name:           runhs
+version:        1.0.0.0
+description:    Please see the README on GitHub at <https://github.com/friedbrice/runhs#readme>
+homepage:       https://github.com/friedbrice/runhs#readme
+bug-reports:    https://github.com/friedbrice/runhs/issues
+author:         Daniel Brice
+maintainer:     danielbrice@gmail.com
+copyright:      2020 Daniel Brice
+license:        BSD-3-Clause
+license-file:   README.md
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/friedbrice/runhs
+
+executable runhs-exe
+  main-is: Main.hs
+  hs-source-dirs: src
+  ghc-options: -O2
+  build-depends: base >=4.7 && <5, bytestring, file-embed, process, yaml
+  default-language: Haskell2010
