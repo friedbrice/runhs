@@ -5,19 +5,19 @@ Stack wrapper for single-file Haskell programs.
 
 ## Install
 
-  1. First, install [Stack](https://haskellstack.org).
+1. First, install [Stack](https://haskellstack.org).
 
-  2. Add Stack's install directory to your `PATH`.
+2. Add Stack's install directory to your `PATH`.
 
-    * **Windows:** Installing Stack automatically adds its install directory to your `PATH`.
+  * **Windows:** Installing Stack automatically adds its install directory to your `PATH`.
 
-    * **Most Linux:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.profile && export PATH="${HOME}/.local/bin:${PATH}"`
+  * **Most Linux:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.profile && export PATH="${HOME}/.local/bin:${PATH}"`
 
-    * **MacOS Pre-Catalina:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.bash_profile && export PATH="${HOME}/.local/bin:${PATH}"`
+  * **MacOS Pre-Catalina:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.bash_profile && export PATH="${HOME}/.local/bin:${PATH}"`
 
-    * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
+  * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
 
-  3. Finally, install _runhs_: `stack install runhs`.
+3. Finally, install _runhs_: `stack install runhs`.
 
 
 ## Usage
