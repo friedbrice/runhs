@@ -2,6 +2,7 @@
 resolver: nightly
 packages:
   - bytestring
+  - file-embed
   - process
   - yaml
 -}
