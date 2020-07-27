@@ -19,7 +19,7 @@ jobs:
         - lts-12
         os:
         - ubuntu-latest
-        - maxOS-latest
+        - macOS-latest
         - windows-latest
 
     steps:
