@@ -2,7 +2,7 @@ cabal-version: 2.2
 
 name:           runhs
 version:        1.0.0.0
-description:    Please see the README on GitHub at <https://github.com/friedbrice/runhs#readme>
+description:    Stack wrapper for single-file Haskell programs.
 homepage:       https://github.com/friedbrice/runhs#readme
 bug-reports:    https://github.com/friedbrice/runhs/issues
 author:         Daniel Brice

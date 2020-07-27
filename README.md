@@ -37,7 +37,7 @@ The comment delimiters `{-` and `-}` must appear on their own lines.
 
 The `resolver` property is required and must be a valid [Stackage resolver](https://www.stackage.org/snapshots). The `packages` property is required if your Haskell program depends on external packages, but may be omitted if your Haskell program does not.
 
-Finally, you may load your program in _Watch mode_ or _REPL mode_, run your program, or compile your program (respectively), as follows:
+Finally, you may load your program in _Watch Mode_ or in _Interactive Mode_, or run your program, or compile your program, as follows.
 
 ```
 runhs (watch|repl|run|compile) <file> [<args>]
