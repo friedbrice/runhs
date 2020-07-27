@@ -33,14 +33,14 @@ packages:
 -}
 ```
 
-The comment delimiters `{-` and `-}` must appear on their own lines.
+The comment delimiters `{-` and `-}` must appear on their own lines, and it must be the first block comment in your file.
 
 The `resolver` property is required and must be a valid [Stackage resolver](https://www.stackage.org/snapshots). The `packages` property is required if your Haskell program depends on external packages, but may be omitted if your Haskell program does not.
 
-Finally, you may load your program in _Watch Mode_ or in _Interactive Mode_ (a.k.a. _REPL Mode_), or run your program, or compile your program, as follows.
+Once you have the appropriate head matter at the top of your file, you may load your program in _Watch Mode_ or in _Interactive Mode_ (a.k.a. _REPL Mode_), or run your program as a script, or compile your program, as follows.
 
 ```
-runhs (watch|repl|run|compile) <file> [<args>]
+runhs (watch|repl|script|compile) <file> [<args>]
 ```
 
 

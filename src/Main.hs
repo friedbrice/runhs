@@ -61,7 +61,7 @@ main = do
         "watch":file:_ -> watch =<< spec file
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
-        "run":file:args' -> run args' =<< spec file
+        "script":file:args' -> script args' =<< spec file
         _ -> help "main"
 
 go :: CreateProcess -> IO ()
@@ -90,8 +90,8 @@ compile :: RunSpec -> IO ()
 compile spec = go $
     proc "stack" ("ghc" : stackArgs spec)
 
-run :: [String] -> RunSpec -> IO ()
-run args spec = go $
+script :: [String] -> RunSpec -> IO ()
+script args spec = go $
     proc "stack" ("runhaskell" : stackArgs spec <> args)
 
 help :: (?loc :: CallStack) => String -> IO a
