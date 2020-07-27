@@ -6,7 +6,7 @@ on:
 
 jobs:
   stack:
-    name: stack / resolver ${{ matrix.resolver }} / os ${{ matrix.os }}
+    name: stack / ${{ matrix.resolver }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
