@@ -21,6 +21,9 @@ jobs:
         - ubuntu-latest
         - macOS-latest
         - windows-latest
+        exclude:
+        - os: windows-latest
+          resolver: lts-16
 
     steps:
     - uses: actions/checkout@v2
