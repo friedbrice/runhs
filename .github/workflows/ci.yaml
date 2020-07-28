@@ -16,19 +16,19 @@ jobs:
         resolver:
         - nightly
         - lts-16
-        - lts-15
         - lts-14
-        - lts-13
         - lts-12
         exclude:
+        - os: macOS-latest
+          resolver: lts-16
+        - os: macOS-latest
+          resolver: lts-14
+        - os: macOS-latest
+          resolver: lts-12
         - os: windows-latest
           resolver: lts-16
         - os: windows-latest
-          resolver: lts-15
-        - os: windows-latest
           resolver: lts-14
-        - os: windows-latest
-          resolver: lts-13
         - os: windows-latest
           resolver: lts-12
     runs-on: ${{ matrix.os }}
