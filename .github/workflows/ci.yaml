@@ -11,7 +11,7 @@ jobs:
       matrix:
         resolver:
         - nightly
-        # - lts-16
+        - lts-16
         # - lts-15
         # - lts-14
         # - lts-13
