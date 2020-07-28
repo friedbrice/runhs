@@ -7,43 +7,68 @@ on:
 jobs:
   stack:
     name: stack / ${{ matrix.resolver }} / ${{ matrix.os }}
+
     strategy:
       matrix:
         os:
-        - macOS-latest
-        - ubuntu-latest
-        - windows-latest
+          - macOS-latest
+          - ubuntu-latest
+          - windows-latest
         resolver:
-        - nightly
-        - lts-16
-        - lts-14
-        - lts-12
+          - nightly
+          - lts-16
+          - lts-14
+          - lts-12
         exclude:
-        - os: macOS-latest
-          resolver: lts-16
-        - os: macOS-latest
-          resolver: lts-14
-        - os: macOS-latest
-          resolver: lts-12
-        - os: windows-latest
-          resolver: lts-16
-        - os: windows-latest
-          resolver: lts-14
-        - os: windows-latest
-          resolver: lts-12
+          - os: macOS-latest
+            resolver: lts-16
+          - os: macOS-latest
+            resolver: lts-14
+          - os: macOS-latest
+            resolver: lts-12
+          - os: windows-latest
+            resolver: lts-16
+          - os: windows-latest
+            resolver: lts-14
+          - os: windows-latest
+            resolver: lts-12
+
     runs-on: ${{ matrix.os }}
+
     steps:
-    - uses: actions/checkout@v2
-      if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
-    - name: Setup Haskell Stack
-      uses: actions/setup-haskell@v1.1
-      with:
-        stack-version: '2.3.1'
-    - name: Cache ~/.stack
-      uses: actions/cache@v1
-      with:
-        path: ~/.stack
-        key: ${{ matrix.os }}-${{ matrix.resolver }}-stack
-    - name: Build
-      run: |
-        stack build --resolver ${{ matrix.resolver }}
+      - name: Checkout
+        if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+        uses: actions/checkout@v2
+
+      - name: Setup Haskell Stack
+        uses: actions/setup-haskell@v1.1
+        with:
+          stack-version: '2.3.1'
+
+      - name: Cache ~/.stack
+        uses: actions/cache@v1
+        with:
+          path: ~/.stack
+          key: ${{ matrix.os }}-${{ matrix.resolver }}-stack
+
+      - name: Build
+        run: |
+          stack build --resolver ${{ matrix.resolver }}
+
+      - name: Upload artifacts (MacOS/Linux)
+        if: ${{ matrix.resolver }} == 'nightly' && (${{ matrix.os }} == 'macOS-latest' || ${{ matrix.os }} == 'ubuntu-latest')
+        run: |
+          cp $(stack exec --resolver ${{ matrix.resolver }} runhs-exe) ./runhs
+        uses: actions/upload-artifact@v2
+        with:
+          name: runhs-${{ matrix.os }}
+          path: './runhs'
+
+      - name: Upload artifacts (Windows)
+        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os == 'windows-latest' }}
+        run: |
+          xcopy (stack exec --resolver ${{ matrix.resolver }} runhs-exe) %CD%\runhs.exe
+        uses: actions/upload-artifact@v2
+        with:
+          name: runhs-${{ matrix.os }}.exe
+          path: '%CD%\runhs.exe'
