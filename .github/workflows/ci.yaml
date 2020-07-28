@@ -11,11 +11,11 @@ jobs:
       matrix:
         resolver:
         - nightly
-        - lts-16
-        - lts-15
-        - lts-14
-        - lts-13
-        - lts-12
+        # - lts-16
+        # - lts-15
+        # - lts-14
+        # - lts-13
+        # - lts-12
         os:
         - macOS-latest
         - ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
     - name: Setup Haskell Stack
       uses: actions/setup-haskell@v1.1
       with:
-        stack-verion: '2.3.1'
+        stack-version: '2.3.1'
     - name: Cache ~/.stack
       uses: actions/cache@v1
       with:
