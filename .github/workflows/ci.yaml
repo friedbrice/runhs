@@ -12,7 +12,7 @@ jobs:
         resolver:
         - nightly
         - lts-16
-        # - lts-15
+        - lts-15
         # - lts-14
         # - lts-13
         # - lts-12
@@ -20,6 +20,9 @@ jobs:
         - macOS-latest
         - ubuntu-latest
         - windows-latest
+        exclude:
+        - resolver: lts-16
+          os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
