@@ -17,7 +17,7 @@ Stack wrapper for single-file Haskell programs.
 
   * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
 
-3. Finally, install _runhs_: `stack install runhs`.
+3. ~~Finally, install _runhs_: `stack install runhs`~~. **Note:** the `runhs` package is not yet available on [Hackage](https://hackage.haskell.org), so `stack install runhs` will fail. Instead, download the binary for your operating system from the [Releases Page]().
 
 
 ## Usage
