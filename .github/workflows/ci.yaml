@@ -61,7 +61,7 @@ jobs:
           cp $(stack exec --resolver ${{ matrix.resolver }} which runhs-exe) ./runhs
 
       - name: Copy artifacts (Windows)
-        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os }} == 'windows-latest'
         run: |
           xcopy (stack exec --resolver ${{ matrix.resolver }} where runhs-exe) %CD%\runhs.exe
 
@@ -73,7 +73,7 @@ jobs:
           path: './runhs'
 
       - name: Upload artifacts (Windows)
-        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os }} == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: runhs-${{ matrix.os }}.exe
