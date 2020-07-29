@@ -5,19 +5,17 @@ on:
     branches: [master]
 
 jobs:
-  Linux:
+  Compat:
     name: Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
         resolver:
-          - nightly
           - lts-16
           - lts-14
           - lts-12
     steps:
       - name: Checkout
-        if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
@@ -31,17 +29,40 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Linux-${{ matrix.resolver }}
+          key: stack-cache-Compat-${{ matrix.resolver }}
 
       - name: Build
         run: |
           stack build --resolver ${{ matrix.resolver }}
 
+  Linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Haskell Stack
+        uses: actions/setup-haskell@v1.1.2
+        with:
+          enable-stack: true
+          stack-no-global: true
+          stack-version: 'latest'
+
+      - name: Cache Stack directory
+        uses: actions/cache@v1
+        with:
+          path: ~/.stack
+          key: stack-cache-Linux
+
+      - name: Build
+        run: |
+          stack build --resolver nightly
+
       - name: Upload artifacts
-        if: ${{ matrix.resolver }} == 'nightly'
         uses: actions/upload-artifact@v2
         with:
-          name: linux-runhs
+          name: Linux
           path: |
             .stack-work/dist/**/**/build/runhs-exe/runhs-exe
 
@@ -50,7 +71,6 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
@@ -73,7 +93,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: mac-runhs
+          name: Mac
           path: |
             .stack-work/dist/**/**/build/runhs-exe/runhs-exe
 
@@ -82,7 +102,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
@@ -105,6 +124,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: windows-runhs.exe
+          name: Windows
           path: |
             .stack-work/dist/**/build/runhs-exe/runhs-exe.exe
