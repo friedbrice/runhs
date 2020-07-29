@@ -101,4 +101,4 @@ jobs:
         with:
           name: windows-runhs.exe
           path: |
-            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+            .stack-work/dist/**/build/runhs-exe/runhs-exe.exe
