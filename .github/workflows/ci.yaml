@@ -21,25 +21,24 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        id: setup-haskell
         uses: actions/setup-haskell@v1.1.2
         with:
           enable-stack: true
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Cache Stack path
+      - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: ${{ steps.setup-haskell.outputs.stack-path }}
-          key: ubuntu-latest-${{ matrix.resolver }}
+          path: ~/.stack
+          key: stack-cache-Linux-${{ matrix.resolver }}
 
       - name: Build
         run: |
           stack build --resolver ${{ matrix.resolver }}
 
       - name: Upload artifacts
-        if: ${{ matrix.resolver }} == nightly
+        if: ${{ matrix.resolver }} == 'nightly'
         uses: actions/upload-artifact@v2
         with:
           name: linux-runhs
@@ -55,18 +54,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        id: setup-haskell
         uses: actions/setup-haskell@v1.1.2
         with:
           enable-stack: true
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Cache Stack path
+      - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: ${{ steps.setup-haskell.outputs.stack-path }}
-          key: macOS-latest
+          path: ~/.stack
+          key: stack-cache-Mac
 
       - name: Build
         run: |
@@ -88,18 +86,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        id: setup-haskell
         uses: actions/setup-haskell@v1.1.2
         with:
           enable-stack: true
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Cache Stack path
+      - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: ${{ steps.setup-haskell.outputs.stack-path }}
-          key: windows-latest
+          path: '%STACK_ROOT%'
+          key: stack-cache-Windows
 
       - name: Build
         run: |
