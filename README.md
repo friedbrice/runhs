@@ -24,7 +24,7 @@ Declare package dependencies in your single-file Haskell program. Easily and rel
 
 ## Usage
 
-Add a block comment at the start of any single-file Haskell program in the following format:
+Add a block comment (the _front matter_) at the start of any single-file Haskell program in the following format:
 
 ```
 {-
@@ -35,11 +35,11 @@ packages:
 -}
 ```
 
-The comment delimiters `{-` and `-}` must appear on their own lines, and it must be the first block comment in your file.
+The front matter must be the first block comment in your file, and the comment delimiters `{-` and `-}` must appear on their own lines, just as above.
 
 The `resolver` property is required and must be a valid [Stackage resolver](https://www.stackage.org/snapshots). The `packages` property is required if your Haskell program depends on external packages, but may be omitted if your Haskell program does not.
 
-Once you have the appropriate head matter at the top of your file, you may load your program in _Watch Mode_ or in _Interactive Mode_ (a.k.a. _REPL Mode_), or run your program as a script, or compile your program, as follows.
+Once you have the appropriate front matter at the top of your file, you may load your program in _Watch Mode_ or in _Interactive Mode_ (a.k.a. _REPL Mode_) in GHCi, or run your program as a script, or compile your program, using the following command format.
 
 ```
 runhs (watch|repl|script|compile) <file> [<args>]
