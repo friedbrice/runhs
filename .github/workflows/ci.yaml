@@ -21,14 +21,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1
+        id: setup-haskell
+        uses: actions/setup-haskell@v1.1.2
         with:
-          stack-version: '2.3.1'
+          enable-stack: true
+          stack-no-global: true
+          stack-version: 'latest'
 
-      - name: Cache ~/.stack
+      - name: Cache Stack path
         uses: actions/cache@v1
         with:
-          path: ~/.stack
+          path: ${{ steps.setup-haskell.outputs.stack-path }}
           key: ubuntu-latest-${{ matrix.resolver }}
 
       - name: Build
@@ -52,14 +55,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1
+        id: setup-haskell
+        uses: actions/setup-haskell@v1.1.2
         with:
-          stack-version: '2.3.1'
+          enable-stack: true
+          stack-no-global: true
+          stack-version: 'latest'
 
-      - name: Cache ~/.stack
+      - name: Cache Stack path
         uses: actions/cache@v1
         with:
-          path: ~/.stack
+          path: ${{ steps.setup-haskell.outputs.stack-path }}
           key: macOS-latest
 
       - name: Build
@@ -82,14 +88,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1
+        id: setup-haskell
+        uses: actions/setup-haskell@v1.1.2
         with:
-          stack-version: '2.3.1'
+          enable-stack: true
+          stack-no-global: true
+          stack-version: 'latest'
 
-      - name: Cache ~/.stack
+      - name: Cache Stack path
         uses: actions/cache@v1
         with:
-          path: ~/.stack
+          path: ${{ steps.setup-haskell.outputs.stack-path }}
           key: windows-latest
 
       - name: Build
