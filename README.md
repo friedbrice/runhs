@@ -19,7 +19,7 @@ Declare package dependencies in your single-file Haskell program. Easily and rel
 
   * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
 
-3. ~~Finally, install _runhs_: `stack install runhs`.~~ WORK IN PROGRESS!
+3. Finally, install _runhs_: ~~`stack install runhs`.~~ Download the appropriate executable for your platform from the [Releases page](https://github.com/friedbrice/runhs/releases/).
 
 
 ## Usage

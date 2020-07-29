@@ -1,7 +1,7 @@
 cabal-version: 2.2
 
 name: runhs
-version: 1.0.0.1
+version: 1.0.0.2
 synopsis: Stack wrapper for single-file Haskell programs.
 description:
   Stack wrapper for single-file Haskell programs.
