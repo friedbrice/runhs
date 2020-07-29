@@ -3,7 +3,10 @@ cabal-version: 2.2
 name: runhs
 version: 1.0.0.1
 synopsis: Stack wrapper for single-file Haskell programs.
-description: Stack wrapper for single-file Haskell programs.
+description:
+  Stack wrapper for single-file Haskell programs.
+  Declare package dependencies in your single-file Haskell program.
+  Easily and reliably run your program, compile it, or load it in GHCi or Ghcid.
 category: Tools
 homepage: https://github.com/friedbrice/runhs#readme
 bug-reports: https://github.com/friedbrice/runhs/issues

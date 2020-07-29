@@ -2,6 +2,8 @@
 
 Stack wrapper for single-file Haskell programs.
 
+Declare package dependencies in your single-file Haskell program. Easily and reliably run your program, compile it, or load it in GHCi or Ghcid.
+
 
 ## Install
 
@@ -17,7 +19,7 @@ Stack wrapper for single-file Haskell programs.
 
   * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
 
-3. ~~Finally, install _runhs_: `stack install runhs`~~. **Note:** the `runhs` package is not yet available on [Hackage](https://hackage.haskell.org), so `stack install runhs` will fail. Instead, download the binary for your operating system from the [Releases Page]().
+3. ~~Finally, install _runhs_: `stack install runhs`.~~ WORK IN PROGRESS!
 
 
 ## Usage

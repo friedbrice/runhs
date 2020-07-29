@@ -5,76 +5,79 @@ on:
     branches: [master]
 
 jobs:
-  stack:
-    name: stack / ${{ matrix.resolver }} / ${{ matrix.os }}
-
+  Linux:
+    name: Linux
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os:
-          - macOS-latest
-          - ubuntu-latest
-          - windows-latest
         resolver:
           - nightly
           - lts-16
           - lts-14
           - lts-12
-        exclude:
-          - os: macOS-latest
-            resolver: lts-16
-          - os: macOS-latest
-            resolver: lts-14
-          - os: macOS-latest
-            resolver: lts-12
-          - os: windows-latest
-            resolver: lts-16
-          - os: windows-latest
-            resolver: lts-14
-          - os: windows-latest
-            resolver: lts-12
-
-    runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout
-        if: github.event.action == 'opend' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
-        uses: actions/checkout@v2
-
-      - name: Setup Haskell Stack
         uses: actions/setup-haskell@v1.1
         with:
           stack-version: '2.3.1'
-
       - name: Cache ~/.stack
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: ${{ matrix.os }}-${{ matrix.resolver }}-stack
-
+          key: ubuntu-latest-${{ matrix.resolver }}
       - name: Build
         run: |
           stack build --resolver ${{ matrix.resolver }}
-
-      - name: Copy artifacts (MacOS/Linux)
-        if: ${{ matrix.resolver }} == 'nightly' && (${{ matrix.os }} == 'macOS-latest' || ${{ matrix.os }} == 'ubuntu-latest')
-        run: |
-          cp $(stack exec --resolver ${{ matrix.resolver }} which runhs-exe) ./runhs
-
-      - name: Copy artifacts (Windows)
-        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os }} == 'windows-latest'
-        run: |
-          xcopy (stack exec --resolver ${{ matrix.resolver }} where runhs-exe) %CD%\runhs.exe
-
-      - name: Upload artifacts (MacOS/Linux)
-        if: ${{ matrix.resolver }} == 'nightly' && (${{ matrix.os }} == 'macOS-latest' || ${{ matrix.os }} == 'ubuntu-latest')
+      - name: Upload artifacts
+        if: ${{ matrix.resolver }} == nightly
         uses: actions/upload-artifact@v2
         with:
-          name: runhs-${{ matrix.os }}
-          path: './runhs'
+          name: linux/runhs
+          path: |
+            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
 
-      - name: Upload artifacts (Windows)
-        if: ${{ matrix.resolver }} == 'nightly' && ${{ matrix.os }} == 'windows-latest'
+  Mac:
+    name: Mac
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/setup-haskell@v1.1
+        with:
+          stack-version: '2.3.1'
+      - name: Cache ~/.stack
+        uses: actions/cache@v1
+        with:
+          path: ~/.stack
+          key: macOS-latest
+      - name: Build
+        run: |
+          stack build --resolver nightly
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: runhs-${{ matrix.os }}.exe
-          path: '%CD%\runhs.exe'
+          name: mac/runhs
+          path: |
+            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+
+  Windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/setup-haskell@v1.1
+        with:
+          stack-version: '2.3.1'
+      - name: Cache ~/.stack
+        uses: actions/cache@v1
+        with:
+          path: ~/.stack
+          key: windows-latest
+      - name: Build
+        run: |
+          stack build --resolver nightly
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows/runhs.exe
+          path: |
+            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
