@@ -139,7 +139,7 @@ jobs:
 
       - name: Copy artifact
         run: |
-          xcopy (stack exec --resolver nightly where runhs-exe) runhs.exe
+          xcopy (stack exec --resolver nightly where runhs-exe) %CD%\runhs.exe
 
       - name: Compress artifact
         uses: svenstaro/upx-action@v2
