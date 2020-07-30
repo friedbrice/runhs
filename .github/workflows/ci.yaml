@@ -53,23 +53,26 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Linux
+          key: stack-cache-Linux-2
 
       - name: Build
         run: |
-          stack build --resolver nightly
+          stack build --resolver nightly --ghc-options="-split-sections -O2"
 
-      - name: Compress artifacts
+      - name: Copy artifact
+        run: |
+          cp $(stack exec --resolver nightly which runhs-exe) runhs
+
+      - name: Compress artifact
         uses: svenstaro/upx-action@v2
         with:
-          file: .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+          file: runhs
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Linux
-          path: |
-            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+          path: runhs
 
   Mac:
     name: Mac
@@ -89,23 +92,26 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Mac
+          key: stack-cache-Mac-2
 
       - name: Build
         run: |
-          stack build --resolver nightly
+          stack build --resolver nightly --ghc-options="-O2"
 
-      - name: Compress artifacts
+      - name: Copy artifact
+        run: |
+          cp $(stack exec --resolver nightly which runhs-exe) runhs
+
+      - name: Compress artifact
         uses: svenstaro/upx-action@v2
         with:
-          file: .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+          file: runhs
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Mac
-          path: |
-            .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+          path: runhs
 
   Windows:
     name: Windows
@@ -125,20 +131,23 @@ jobs:
         uses: actions/cache@v1
         with:
           path: '%STACK_ROOT%'
-          key: stack-cache-Windows
+          key: stack-cache-Windows-2
 
       - name: Build
         run: |
-          stack build --resolver nightly
+          stack build --resolver nightly --ghc-options="-split-sections -O2"
 
-      - name: Compress artifacts
+      - name: Copy artifact
+        run: |
+          xcopy (stack exec --resolver nightly where runhs-exe) runhs.exe
+
+      - name: Compress artifact
         uses: svenstaro/upx-action@v2
         with:
-          file: .stack-work/dist/**/build/runhs-exe/runhs-exe.exe
+          file: runhs.exe
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Windows
-          path: |
-            .stack-work/dist/**/build/runhs-exe/runhs-exe.exe
+          path: runhs.exe
