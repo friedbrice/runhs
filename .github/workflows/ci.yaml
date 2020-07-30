@@ -130,7 +130,7 @@ jobs:
       - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: '%STACK_ROOT%'
+          path: %STACK_ROOT%
           key: stack-cache-Windows-2
 
       - name: Build
@@ -139,7 +139,7 @@ jobs:
 
       - name: Copy artifact
         run: |
-          xcopy (stack exec --resolver nightly where runhs-exe) %CD%\runhs.exe
+          copy (stack exec --resolver nightly where runhs-exe) runhs.exe
 
       - name: Compress artifact
         uses: svenstaro/upx-action@v2
