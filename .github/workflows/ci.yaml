@@ -59,6 +59,11 @@ jobs:
         run: |
           stack build --resolver nightly
 
+      - name: Compress artifacts
+        uses: svenstaro/upx-action@v2
+        with:
+          file: .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -90,6 +95,11 @@ jobs:
         run: |
           stack build --resolver nightly
 
+      - name: Compress artifacts
+        uses: svenstaro/upx-action@v2
+        with:
+          file: .stack-work/dist/**/**/build/runhs-exe/runhs-exe
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -120,6 +130,11 @@ jobs:
       - name: Build
         run: |
           stack build --resolver nightly
+
+      - name: Compress artifacts
+        uses: svenstaro/upx-action@v2
+        with:
+          file: .stack-work/dist/**/build/runhs-exe/runhs-exe.exe
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2

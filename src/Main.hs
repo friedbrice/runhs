@@ -97,4 +97,5 @@ script args spec = go $
 help :: (?loc :: CallStack) => String -> IO a
 help trace = do
     putStrLn $(embedStringFile "README.md")
+    putStrLn ""
     fail (trace <> ": " <> show ?loc)

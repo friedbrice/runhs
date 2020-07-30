@@ -2,7 +2,7 @@
 
 Stack wrapper for single-file Haskell programs.
 
-Declare package dependencies in your single-file Haskell program. Easily and reliably run your program, compile it, or load it in GHCi or Ghcid.
+Declare package dependencies in the source code of your single-file Haskell program. Easily and reliably run your program, compile it, or load it in GHCi or Ghcid.
 
 
 ## Install

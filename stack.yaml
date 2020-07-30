@@ -1,2 +1,2 @@
-resolver: lts-16.6
+resolver: lts-16.7
 packages: ['.']
