@@ -5,120 +5,120 @@ on:
     branches: [master]
 
 jobs:
-  Compat:
-    name: Compat
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        resolver:
-          - lts-16
-          - lts-14
-          - lts-12
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # Compat:
+  #   name: Compat
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       resolver:
+  #         - lts-16
+  #         - lts-14
+  #         - lts-12
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1.2
-        with:
-          enable-stack: true
-          stack-no-global: true
-          stack-version: 'latest'
+  #     - name: Setup Haskell Stack
+  #       uses: actions/setup-haskell@v1.1.2
+  #       with:
+  #         enable-stack: true
+  #         stack-no-global: true
+  #         stack-version: 'latest'
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: stack-cache-Compat-${{ matrix.resolver }}
+  #     - name: Cache Stack directory
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: ~/.stack
+  #         key: stack-cache-Compat-${{ matrix.resolver }}
 
-      - name: Build
-        run: |
-          stack build --resolver ${{ matrix.resolver }}
+  #     - name: Build
+  #       run: |
+  #         stack build --resolver ${{ matrix.resolver }}
 
-  Linux:
-    name: Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # Linux:
+  #   name: Linux
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1.2
-        with:
-          enable-stack: true
-          stack-no-global: true
-          stack-version: 'latest'
+  #     - name: Setup Haskell Stack
+  #       uses: actions/setup-haskell@v1.1.2
+  #       with:
+  #         enable-stack: true
+  #         stack-no-global: true
+  #         stack-version: 'latest'
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: stack-cache-Linux-2
+  #     - name: Cache Stack directory
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: ~/.stack
+  #         key: stack-cache-Linux-2
 
-      - name: Build
-        run: |
-          stack build --resolver nightly --ghc-options="-split-sections -O2"
+  #     - name: Build
+  #       run: |
+  #         stack build --resolver nightly --ghc-options="-split-sections -O2"
 
-      - name: Copy artifact
-        run: |
-          cp $(stack exec --resolver nightly which runhs) runhs
+  #     - name: Copy artifact
+  #       run: |
+  #         cp $(stack exec --resolver nightly which runhs) runhs
 
-      - name: Compress artifact
-        uses: svenstaro/upx-action@v2
-        with:
-          file: runhs
+  #     - name: Compress artifact
+  #       uses: svenstaro/upx-action@v2
+  #       with:
+  #         file: runhs
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux
-          path: runhs
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: Linux
+  #         path: runhs
 
-  Mac:
-    name: Mac
-    runs-on: macOS-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  # Mac:
+  #   name: Mac
+  #   runs-on: macOS-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Setup Haskell Stack
-        uses: actions/setup-haskell@v1.1.2
-        with:
-          enable-stack: true
-          stack-no-global: true
-          stack-version: 'latest'
+  #     - name: Setup Haskell Stack
+  #       uses: actions/setup-haskell@v1.1.2
+  #       with:
+  #         enable-stack: true
+  #         stack-no-global: true
+  #         stack-version: 'latest'
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: stack-cache-Mac-2
+  #     - name: Cache Stack directory
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: ~/.stack
+  #         key: stack-cache-Mac-2
 
-      - name: Build
-        run: |
-          stack build --resolver nightly --ghc-options="-O2"
+  #     - name: Build
+  #       run: |
+  #         stack build --resolver nightly --ghc-options="-O2"
 
-      - name: Copy artifact
-        run: |
-          cp $(stack exec --resolver nightly which runhs) runhs
+  #     - name: Copy artifact
+  #       run: |
+  #         cp $(stack exec --resolver nightly which runhs) runhs
 
-      - name: Compress artifact
-        uses: svenstaro/upx-action@v2
-        with:
-          file: runhs
+  #     - name: Compress artifact
+  #       uses: svenstaro/upx-action@v2
+  #       with:
+  #         file: runhs
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Mac
-          path: runhs
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: Mac
+  #         path: runhs
 
   Windows:
     name: Windows
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      # - name: Checkout
+      #   uses: actions/checkout@v2
 
       - name: Setup Haskell Stack
         uses: actions/setup-haskell@v1.1.2
@@ -127,27 +127,37 @@ jobs:
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: '(stack path --stack-root)'
-          key: stack-cache-Windows-2
-
-      - name: Build
+      - name: Print location of stack root
         run: |
-          stack build --resolver nightly --ghc-options="-split-sections -O2"
+          echo (stack path --stack-root) > stack-root.txt
 
-      - name: Copy artifact
-        run: |
-          copy (stack exec --resolver nightly where runhs) runhs.exe
-
-      - name: Compress artifact
-        uses: svenstaro/upx-action@v2
-        with:
-          file: runhs.exe
-
-      - name: Upload artifact
+      - name: Upload location of stack root
         uses: actions/upload-artifact@v2
         with:
-          name: Windows
-          path: runhs.exe
+          name: stack-root
+          path: stack-root.txt
+
+      # - name: Cache Stack directory
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: WTF
+      #     key: stack-cache-Windows-2
+
+      # - name: Build
+      #   run: |
+      #     stack build --resolver nightly --ghc-options="-split-sections -O2"
+
+      # - name: Copy artifact
+      #   run: |
+      #     copy (stack exec --resolver nightly where runhs) runhs.exe
+
+      # - name: Compress artifact
+      #   uses: svenstaro/upx-action@v2
+      #   with:
+      #     file: runhs.exe
+
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Windows
+      #     path: runhs.exe
