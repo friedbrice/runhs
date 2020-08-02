@@ -127,42 +127,27 @@ jobs:
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: blah
-        run: |
-          stack path --stack-root
-          echo (stack path --stack-root) > stack-root.txt
+      - name: Cache Stack directory
+        uses: actions/cache@v1
+        with:
+          path: C:\Users\runneradmin\AppData\Roaming\stack
+          key: stack-cache-Windows-2
 
-      - name: bloh
+      - name: Build
+        run: |
+          stack build --resolver nightly --ghc-options="-split-sections -O2"
+
+      - name: Copy artifact
+        run: |
+          copy (stack exec --resolver nightly where runhs) runhs.exe
+
+      - name: Compress artifact
+        uses: svenstaro/upx-action@v2
+        with:
+          file: runhs.exe
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: bleh
-          path: stack-root.txt
-
-      # - name: Cache Stack directory
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: C:\Users\runneradmin\AppData\Roaming\stack
-      #     key: stack-cache-Windows-2
-
-      # - name: Test cache
-      #   run: |
-      #     stack build --resolver nightly yaml
-
-      # - name: Build
-      #   run: |
-      #     stack build --resolver nightly --ghc-options="-split-sections -O2"
-
-      # - name: Copy artifact
-      #   run: |
-      #     copy (stack exec --resolver nightly where runhs) runhs.exe
-
-      # - name: Compress artifact
-      #   uses: svenstaro/upx-action@v2
-      #   with:
-      #     file: runhs.exe
-
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: Windows
-      #     path: runhs.exe
+          name: Windows
+          path: runhs.exe
