@@ -61,7 +61,7 @@ jobs:
 
       - name: Copy artifact
         run: |
-          cp $(stack exec --resolver nightly which runhs-exe) runhs
+          cp $(stack exec --resolver nightly which runhs) runhs
 
       - name: Compress artifact
         uses: svenstaro/upx-action@v2
@@ -100,7 +100,7 @@ jobs:
 
       - name: Copy artifact
         run: |
-          cp $(stack exec --resolver nightly which runhs-exe) runhs
+          cp $(stack exec --resolver nightly which runhs) runhs
 
       - name: Compress artifact
         uses: svenstaro/upx-action@v2
@@ -139,7 +139,7 @@ jobs:
 
       - name: Copy artifact
         run: |
-          copy (stack exec --resolver nightly where runhs-exe) runhs.exe
+          copy (stack exec --resolver nightly where runhs) runhs.exe
 
       - name: Compress artifact
         uses: svenstaro/upx-action@v2
