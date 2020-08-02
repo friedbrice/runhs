@@ -133,9 +133,9 @@ jobs:
           path: C:\Users\runneradmin\AppData\Roaming\stack
           key: stack-cache-Windows-2
 
-      - name: Test cache
+      - name: Load cache too
         run: |
-          stack build yaml
+          stack build --resolver nightly yaml
 
       # - name: Build
       #   run: |
