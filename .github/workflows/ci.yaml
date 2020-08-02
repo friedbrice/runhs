@@ -127,15 +127,26 @@ jobs:
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: C:\Users\runneradmin\AppData\Roaming\stack
-          key: stack-cache-Windows-2
-
-      - name: Test cache
+      - name: blah
         run: |
-          stack build --resolver nightly yaml
+          stack path --stack-root
+          echo (stack path --stack-root) > stack-root.txt
+
+      - name: bloh
+        uses: actions/upload-artifact@v2
+        with:
+          name: bleh
+          path: stack-root.txt
+
+      # - name: Cache Stack directory
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: C:\Users\runneradmin\AppData\Roaming\stack
+      #     key: stack-cache-Windows-2
+
+      # - name: Test cache
+      #   run: |
+      #     stack build --resolver nightly yaml
 
       # - name: Build
       #   run: |
