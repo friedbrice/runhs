@@ -21,7 +21,7 @@ source-repository head
   type: git
   location: https://github.com/friedbrice/runhs
 
-executable runhs-exe
+executable runhs
   main-is: Main.hs
   hs-source-dirs: src
   build-depends:
