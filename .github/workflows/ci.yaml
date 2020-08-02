@@ -127,21 +127,15 @@ jobs:
           stack-no-global: true
           stack-version: 'latest'
 
-      - name: Print location of stack root
-        run: |
-          echo (stack path --stack-root) > stack-root.txt
-
-      - name: Upload location of stack root
-        uses: actions/upload-artifact@v2
+      - name: Cache Stack directory
+        uses: actions/cache@v1
         with:
-          name: stack-root
-          path: stack-root.txt
+          path: C:\Users\runneradmin\AppData\Roaming\stack
+          key: stack-cache-Windows-2
 
-      # - name: Cache Stack directory
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: WTF
-      #     key: stack-cache-Windows-2
+      - name: Test cache
+        run: |
+          stack build yaml
 
       # - name: Build
       #   run: |
