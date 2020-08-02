@@ -6,18 +6,17 @@ packages:
   - process
   - yaml
 -}
-{-# LANGUAGE ImplicitParams, OverloadedStrings, TemplateHaskell #-}
+{-# OPTIONS_GHC -Wall -fno-warn-name-shadowing #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 
 module Main (main) where
 
-import Control.Monad (void)
 import Data.ByteString.Char8 (pack)
 import Data.FileEmbed (embedStringFile)
-import Data.Foldable (fold, toList)
-import Data.Yaml (Value, decodeThrow, parseMaybe, withObject, (.:), (.:?))
-import GHC.Exception (CallStack)
+import Data.Foldable (fold)
+import Data.Yaml (decodeThrow, parseMaybe, withObject, (.:), (.:?))
 import System.Environment (getArgs)
-import System.Exit (exitWith)
+import System.Exit (ExitCode(ExitFailure), exitWith)
 import System.IO (BufferMode(NoBuffering), hSetBuffering, stdout)
 import System.Process (CreateProcess, createProcess, proc, waitForProcess)
 
@@ -38,7 +37,9 @@ spec path = do
             . lines
     header <- readHeader =<< readFile path
     (resolver, packages) <-
-        maybe (help "spec") pure
+        maybe
+            (help $ "unable to parse the front matter in " <> path)
+            pure
         . flip parseMaybe header
         . withObject "header"
         $ \hdr -> do
@@ -62,16 +63,16 @@ main = do
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
         "script":file:args' -> script args' =<< spec file
-        _ -> help "main"
+        _ -> help "unable to parse the command-line arguments"
 
-go :: CreateProcess -> IO ()
-go process = do
+runProcess :: CreateProcess -> IO ()
+runProcess process = do
     (_, _, _, h) <- createProcess process
     code <- waitForProcess h
     exitWith code
 
 watch :: RunSpec -> IO ()
-watch spec = go $
+watch spec = runProcess $
     proc "stack"
         [ "exec"
         , "--resolver"
@@ -83,19 +84,21 @@ watch spec = go $
         ]
 
 repl :: RunSpec -> IO ()
-repl spec = go $
+repl spec = runProcess $
     proc "stack" ("repl" : stackArgs spec)
 
 compile :: RunSpec -> IO ()
-compile spec = go $
+compile spec = runProcess $
     proc "stack" ("ghc" : stackArgs spec)
 
 script :: [String] -> RunSpec -> IO ()
-script args spec = go $
+script args spec = runProcess $
     proc "stack" ("runhaskell" : stackArgs spec <> args)
 
-help :: (?loc :: CallStack) => String -> IO a
-help trace = do
+help :: String -> IO a
+help reason = do
+    putStrLn (replicate 40 '~')
     putStrLn $(embedStringFile "README.md")
-    putStrLn ""
-    fail (trace <> ": " <> show ?loc)
+    putStrLn (replicate 40 '~')
+    putStrLn $ "runhs: " <> reason <> ". Please see ``Usage'' above."
+    exitWith (ExitFailure 1)
