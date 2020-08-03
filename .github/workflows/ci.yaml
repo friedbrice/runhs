@@ -5,6 +5,31 @@ on:
     branches: [master]
 
 jobs:
+  Consistency:
+    name: Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Haskell Stack
+        uses: actions/setup-haskell@v1.1.2
+        with:
+          enable-stack: true
+          stack-no-global: true
+          stack-version: latest
+
+      - name: Version is increasing
+        run: |
+          HEAD_VERSION=$(cat runhs.cabal | grep ^version | cut -d' ' -f2)
+          RELEASE_VERSION=$(git describe --tags | cut -d'-' -f1 | cut -d'v' -f2)
+          [[ $HEAD_VERSION > $RELEASE_VERSION ]]
+
+      - name: No cabal package format warnings
+        run: |
+          WARNINGS=$(stack sdist . 2>&1 | tail -n 1)
+          [[ $WARNINGS == "Checking package 'runhs' for common mistake" ]]
+
   Compat:
     name: Compat
     runs-on: ubuntu-latest
@@ -23,7 +48,7 @@ jobs:
         with:
           enable-stack: true
           stack-no-global: true
-          stack-version: 'latest'
+          stack-version: latest
 
       - name: Cache Stack directory
         uses: actions/cache@v1
@@ -47,7 +72,7 @@ jobs:
         with:
           enable-stack: true
           stack-no-global: true
-          stack-version: 'latest'
+          stack-version: latest
 
       - name: Cache Stack directory
         uses: actions/cache@v1
@@ -86,7 +111,7 @@ jobs:
         with:
           enable-stack: true
           stack-no-global: true
-          stack-version: 'latest'
+          stack-version: latest
 
       - name: Cache Stack directory
         uses: actions/cache@v1
@@ -125,7 +150,7 @@ jobs:
         with:
           enable-stack: true
           stack-no-global: true
-          stack-version: 'latest'
+          stack-version: latest
 
       - name: Cache Stack directory
         uses: actions/cache@v1
