@@ -32,6 +32,10 @@ main = hspec $ do
             (success, _, _) <- runhs Repl helloHaskell [] ":t greet\n:q"
             success `shouldBe` True
 
+        it "should load in watch mode" $ do
+            _ <- runhs Watch helloHaskell ["--allow-eval"] ""
+            return ()
+
         it "should load in script mode" $ do
             (success, out, _) <- runhs Script helloHaskell [] ""
             success `shouldBe` True

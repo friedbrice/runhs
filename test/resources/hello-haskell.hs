@@ -19,3 +19,5 @@ main = do
 greet :: [String] -> [IO ()]
 greet [] = [T.putStrLn "Hello, World!"]
 greet xs = fmap (\name -> T.putStrLn ("Hello, " <> T.pack name <> "!")) xs
+
+-- $> :q

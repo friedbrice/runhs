@@ -59,7 +59,7 @@ main = do
     hSetBuffering stdout NoBuffering
     args <- getArgs
     case args of
-        "watch":file:_ -> watch =<< spec file
+        "watch":file:args' -> watch args' =<< spec file
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
         "script":file:args' -> script args' =<< spec file
@@ -71,9 +71,9 @@ runProcess process = do
     code <- waitForProcess h
     exitWith code
 
-watch :: RunSpec -> IO ()
-watch spec = runProcess $
-    proc "stack"
+watch :: [String] -> RunSpec -> IO ()
+watch args spec = runProcess $
+    proc "stack" $
         [ "exec"
         , "--resolver"
         , resolver spec
@@ -82,6 +82,7 @@ watch spec = runProcess $
         , "--command"
         , unwords $ "stack" : "repl" : stackArgs spec
         ]
+        <> args
 
 repl :: RunSpec -> IO ()
 repl spec = runProcess $
