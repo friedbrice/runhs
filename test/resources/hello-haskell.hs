@@ -1,7 +1,6 @@
 {-
-resolver: lts-16.8
-packages:
-  - text
+resolver: nightly
+packages: [text]
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
