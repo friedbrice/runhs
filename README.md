@@ -19,7 +19,11 @@ Declare package dependencies in the source code of your single-file Haskell prog
 
   * **MacOS Catalina and newer:** `echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.zshrc && export PATH="${HOME}/.local/bin:${PATH}"`
 
-3. Finally, install _runhs_: Download the appropriate executable for your platform from the [Releases page](https://github.com/friedbrice/runhs/releases/) and put it somewhere on your `PATH`, or `stack install runhs`.
+3. Finally, use one of the following install methods.
+
+  * **Stack (recommended):** `stack install runhs`
+
+  * **Download:** Download the appropriate executable for your platform from the [Releases page](https://github.com/friedbrice/runhs/releases/), unzip it, and put it somewhere on your `PATH`.
 
 
 ## Usage

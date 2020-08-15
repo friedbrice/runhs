@@ -1,7 +1,7 @@
 cabal-version: 2.2
 
 name: runhs
-version: 1.0.0.4
+version: 1.0.0.5
 synopsis: Stack wrapper for single-file Haskell programs.
 description:
   Stack wrapper for single-file Haskell programs.
@@ -30,4 +30,15 @@ executable runhs
     , file-embed >=0.0.10.1 && <1
     , process >=1.6.3.0 && <2
     , yaml >=0.8.32 && <1
+  default-language: Haskell2010
+
+test-suite runhs-test
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  hs-source-dirs: test
+  build-depends:
+      base
+    , directory >=1.3.1.5 && <2
+    , hspec >=2.5.5 && <3
+    , process
   default-language: Haskell2010
