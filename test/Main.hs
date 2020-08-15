@@ -1,3 +1,10 @@
+{-
+resolver: nightly
+packages:
+  - directory
+  - hspec
+  - process
+-}
 module Main (main) where
 
 import Test.Hspec
@@ -13,15 +20,14 @@ render Script = "script"
 render Compile = "compile"
 
 type Stdin = String
-type Stderr = String
 type Stdout = String
+type Stderr = String
 
-runhs :: Mode -> FilePath -> [String] -> Stdin -> IO (Bool, Stdout, Stderr)
+runhs :: Mode -> FilePath -> [String] -> Stdin -> IO (Sys.ExitCode, Stdout, Stderr)
 runhs mode path args stdin =
-    isSuccess <$> Sys.readProcessWithExitCode "stack" args' stdin
+    Sys.readProcessWithExitCode "stack" args' stdin
     where
     args' = ["exec", "--resolver", "nightly", "runhs", render mode, path] <> args
-    isSuccess (ec, so, se) = (ec == Sys.ExitSuccess, so, se)
 
 main :: IO ()
 main = hspec $ do
@@ -29,31 +35,31 @@ main = hspec $ do
         let helloHaskell = "test/resources/hello-haskell.hs"
 
         it "should load in repl mode" $ do
-            (success, _, _) <- runhs Repl helloHaskell [] ":t greet\n:q"
-            success `shouldBe` True
+            (status, _, _) <- runhs Repl helloHaskell [] ":t greet\n:q"
+            status `shouldBe` Sys.ExitSuccess
 
         it "should load in watch mode" $ do
-            _ <- runhs Watch helloHaskell ["--allow-eval"] ""
-            return ()
+            (status, _, _) <- runhs Watch helloHaskell ["--allow-eval"] ""
+            status `shouldBe` Sys.ExitSuccess
 
         it "should load in script mode" $ do
-            (success, out, _) <- runhs Script helloHaskell [] ""
-            success `shouldBe` True
+            (status, out, _) <- runhs Script helloHaskell [] ""
+            status `shouldBe` Sys.ExitSuccess
             out `shouldBe` "Hello, World!\n"
 
         it "should forward arguments in script mode" $ do
-            (success, out, _) <- runhs Script helloHaskell ["Veni", "Vidi"] ""
-            success `shouldBe` True
+            (status, out, _) <- runhs Script helloHaskell ["Veni", "Vidi"] ""
+            status `shouldBe` Sys.ExitSuccess
             out `shouldBe` "Hello, Veni!\nHello, Vidi!\n"
 
         it "should forward stdin in script mode" $ do
-            (success, out, _) <- runhs Script helloHaskell [] "Veni Vidi\nVici"
-            success `shouldBe` True
+            (status, out, _) <- runhs Script helloHaskell [] "Veni Vidi\nVici"
+            status `shouldBe` Sys.ExitSuccess
             out `shouldBe` "Hello, Veni!\nHello, Vidi!\nHello, Vici!\n"
 
         it "should load in compile mode" $ do
-            (success, out, _) <- runhs Compile helloHaskell [] ""
-            success `shouldBe` True
+            (status, out, _) <- runhs Compile helloHaskell [] ""
+            status `shouldBe` Sys.ExitSuccess
             Sys.removePathForcibly "test/resources/hello-haskell.o"
             Sys.removePathForcibly "test/resources/hello-haskell.hi"
             Sys.removePathForcibly "test/resources/hello-haskell"
