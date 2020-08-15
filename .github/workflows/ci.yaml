@@ -169,7 +169,7 @@ jobs:
       - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: ~/.stack
+          path: C:\sr
           key: stack-cache-Windows-2
 
       - name: Build
