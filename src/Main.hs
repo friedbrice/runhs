@@ -38,7 +38,7 @@ spec path = do
     header <- readHeader =<< readFile path
     (resolver, packages) <-
         maybe
-            (help $ "unable to parse the front matter in " <> path)
+            (help $ "Unable to parse the front matter in " <> path <> ".")
             pure
         . flip parseMaybe header
         . withObject "header"
@@ -63,7 +63,7 @@ main = do
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
         "script":file:args' -> script args' =<< spec file
-        _ -> help "unable to parse the command-line arguments"
+        _ -> help "Unable to parse the command-line arguments."
 
 runProcess :: CreateProcess -> IO ()
 runProcess process = do
@@ -101,5 +101,5 @@ help reason = do
     putStrLn (replicate 40 '~')
     putStrLn $(embedStringFile "README.md")
     putStrLn (replicate 40 '~')
-    putStrLn $ "runhs: " <> reason <> ". Please see ``Usage'' above."
+    putStrLn $ unwords ["runhs:", reason, "Please see \"Usage\" above."]
     exitWith (ExitFailure 1)
