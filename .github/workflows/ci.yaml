@@ -28,10 +28,12 @@ jobs:
       - name: No cabal package format warnings
         run: |
           WARNINGS=$(stack sdist . 2>&1 | tail -n 1)
-          [[ $WARNINGS == "Checking package 'runhs' for common mistake" ]]
+          [[ $WARNINGS == "Checking package 'runhs' for common mistakes" ]]
 
   Compat:
     name: Compat
+    needs:
+      - Consistency
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -58,10 +60,14 @@ jobs:
 
       - name: Build
         run: |
+          stack clean
           stack build --resolver ${{ matrix.resolver }}
+          stack test --resolver ${{ matrix.resolver }}
 
   Linux:
     name: Linux
+    needs:
+      - Consistency
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -82,7 +88,9 @@ jobs:
 
       - name: Build
         run: |
+          stack clean
           stack build --resolver nightly --ghc-options="-split-sections -O2"
+          stack test --resolver nightly --ghc-options="-split-sections -O2"
 
       - name: Copy artifact
         run: |
@@ -96,11 +104,13 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Linux
+          name: linux
           path: runhs
 
   Mac:
     name: Mac
+    needs:
+      - Consistency
     runs-on: macOS-latest
     steps:
       - name: Checkout
@@ -121,7 +131,9 @@ jobs:
 
       - name: Build
         run: |
+          stack clean
           stack build --resolver nightly --ghc-options="-O2"
+          stack test --resolver nightly --ghc-options="-O2"
 
       - name: Copy artifact
         run: |
@@ -135,11 +147,13 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Mac
+          name: mac
           path: runhs
 
   Windows:
     name: Windows
+    needs:
+      - Consistency
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -155,12 +169,14 @@ jobs:
       - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: C:\Users\runneradmin\AppData\Roaming\stack
+          path: ~/.stack
           key: stack-cache-Windows-2
 
       - name: Build
         run: |
+          stack clean
           stack build --resolver nightly --ghc-options="-split-sections -O2"
+          stack test --resolver nightly --ghc-options="-split-sections -O2"
 
       - name: Copy artifact
         run: |
@@ -174,5 +190,103 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Windows
+          name: windows
           path: runhs.exe
+
+  Release:
+    name: Release
+    needs:
+      - Compat
+      - Linux
+      - Mac
+      - Windows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Read Version
+        id: read_version
+        run: |
+          echo "##[set-output name=version;]$(cat runhs.cabal | grep '^version' | cut -d ':' -f 2 | tr -d '[:space:]')"
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: '${{ steps.read_version.outputs.version }}'
+          release_name: Release ${{ steps.read_version.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: linux
+
+      - name: Compress Linux artifact
+        run: |
+          chmod +x runhs
+          zip linux.zip runhs
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: mac
+
+      - name: Compress Mac artifact
+        run: |
+          chmod +x runhs
+          zip mac.zip runhs
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: windows
+
+      - name: Compress Windows artifact
+        run: |
+          zip windows.zip runhs.exe
+
+      - name: Attach Linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: linux.zip
+          asset_name: linux.zip
+          asset_content_type: application/zip
+
+      - name: Attach Mac artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: mac.zip
+          asset_name: mac.zip
+          asset_content_type: application/zip
+
+      - name: Attach Windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: windows.zip
+          asset_name: windows.zip
+          asset_content_type: application/zip
+
+      - name: Setup Haskell Stack
+        uses: actions/setup-haskell@v1.1.2
+        with:
+          enable-stack: true
+          stack-no-global: true
+          stack-version: latest
+
+      # - name: Publish to Hackage
+      #   run: |
+      #     echo "TODO"
