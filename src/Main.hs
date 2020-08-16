@@ -4,6 +4,9 @@ packages:
   - bytestring
   - file-embed
   - process
+  - terminal-size
+  - text
+  - word-wrap
   - yaml
 -}
 {-# OPTIONS_GHC -Wall -fno-warn-name-shadowing #-}
@@ -15,10 +18,16 @@ import Data.ByteString.Char8 (pack)
 import Data.FileEmbed (embedStringFile)
 import Data.Foldable (fold)
 import Data.Yaml (decodeThrow, parseMaybe, withObject, (.:), (.:?))
-import System.Environment (getArgs)
-import System.Exit (ExitCode(ExitFailure), exitWith)
-import System.IO (BufferMode(NoBuffering), hSetBuffering, stdout)
-import System.Process (CreateProcess, createProcess, proc, waitForProcess)
+
+import qualified System.Console.Terminal.Size as Sys
+import qualified System.Environment as Sys
+import qualified System.Exit as Sys
+import qualified System.IO as Sys
+import qualified System.Process as Sys
+
+import qualified Data.Text as Text
+import qualified Data.Text.IO as Text
+import qualified Text.Wrap as Text
 
 data RunSpec = RunSpec
     { file :: FilePath
@@ -38,7 +47,7 @@ spec path = do
     header <- readHeader =<< readFile path
     (resolver, packages) <-
         maybe
-            (help $ "Unable to parse the front matter in " <> path <> ".")
+            (help $ unwords ["Unable to parse the front matter in", path, "."])
             pure
         . flip parseMaybe header
         . withObject "header"
@@ -56,8 +65,8 @@ stackArgs spec =
 
 main :: IO ()
 main = do
-    hSetBuffering stdout NoBuffering
-    args <- getArgs
+    Sys.hSetBuffering Sys.stdout Sys.NoBuffering
+    args <- Sys.getArgs
     case args of
         "watch":file:args' -> watch args' =<< spec file
         "repl":file:_ -> repl =<< spec file
@@ -65,15 +74,16 @@ main = do
         "script":file:args' -> script args' =<< spec file
         _ -> help "Unable to parse the command-line arguments."
 
-runProcess :: CreateProcess -> IO ()
+-- spawn a child process and exit with its exit code
+runProcess :: Sys.CreateProcess -> IO ()
 runProcess process = do
-    (_, _, _, h) <- createProcess process
-    code <- waitForProcess h
-    exitWith code
+    (_, _, _, h) <- Sys.createProcess process
+    code <- Sys.waitForProcess h
+    Sys.exitWith code
 
 watch :: [String] -> RunSpec -> IO ()
 watch args spec = runProcess $
-    proc "stack" $
+    Sys.proc "stack" $
         [ "exec"
         , "--resolver"
         , resolver spec
@@ -86,20 +96,25 @@ watch args spec = runProcess $
 
 repl :: RunSpec -> IO ()
 repl spec = runProcess $
-    proc "stack" ("repl" : stackArgs spec)
+    Sys.proc "stack" ("repl" : stackArgs spec)
 
 compile :: RunSpec -> IO ()
 compile spec = runProcess $
-    proc "stack" ("ghc" : stackArgs spec)
+    Sys.proc "stack" ("ghc" : stackArgs spec)
 
 script :: [String] -> RunSpec -> IO ()
 script args spec = runProcess $
-    proc "stack" ("runhaskell" : stackArgs spec <> args)
+    Sys.proc "stack" ("runhaskell" : stackArgs spec <> args)
 
 help :: String -> IO a
 help reason = do
-    putStrLn (replicate 40 '~')
-    putStrLn $(embedStringFile "README.md")
-    putStrLn (replicate 40 '~')
+    n <- min 72 . maybe 72 Sys.width <$> Sys.size
+
+    putStrLn (replicate n '~')
+    Text.putStrLn
+        $ Text.wrapText (Text.WrapSettings True False) n
+        $ Text.pack $(embedStringFile "README.md")
+    putStrLn (replicate n '~')
+
     putStrLn $ unwords ["runhs:", reason, "Please see \"Usage\" above."]
-    exitWith (ExitFailure 1)
+    Sys.exitWith (Sys.ExitFailure 1)
