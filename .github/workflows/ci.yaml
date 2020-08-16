@@ -123,11 +123,11 @@ jobs:
           stack-no-global: true
           stack-version: latest
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: cache-mac-stack
+      # - name: Cache Stack directory
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.stack
+      #     key: cache-mac-stack
 
       - name: Build
         run: |
