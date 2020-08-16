@@ -74,7 +74,6 @@ main = do
         "script":file:args' -> script args' =<< spec file
         _ -> help "Unable to parse the command-line arguments."
 
--- spawn a child process and exit with its exit code
 runProcess :: Sys.CreateProcess -> IO ()
 runProcess process = do
     (_, _, _, h) <- Sys.createProcess process
