@@ -56,7 +56,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Compat-${{ matrix.resolver }}
+          key: cache-compat-${{ matrix.resolver }}-stack
 
       - name: Build
         run: |
@@ -84,7 +84,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Linux-2
+          key: cache-linux-stack
 
       - name: Build
         run: |
@@ -127,7 +127,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.stack
-          key: stack-cache-Mac-2
+          key: cache-mac-stack
 
       - name: Build
         run: |
@@ -170,13 +170,13 @@ jobs:
         uses: actions/cache@v1
         with:
           path: 'C:\Users\runneradmin\AppData\Roaming\stack'
-          key: stack-cache-Windows-2
+          key: cache-windows-stack
 
       - name: Cache GHC
         uses: actions/cache@v1
         with:
           path: 'C:\Users\runneradmin\AppData\Local\Programs\stack'
-          key: ghc-cache-Windows-2
+          key: cache-windows-ghc
 
       - name: Build
         run: |
