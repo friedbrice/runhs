@@ -169,8 +169,14 @@ jobs:
       - name: Cache Stack directory
         uses: actions/cache@v1
         with:
-          path: C:\sr
+          path: 'C:\Users\runneradmin\AppData\Roaming\stack'
           key: stack-cache-Windows-2
+
+      - name: Cache GHC
+        uses: actions/cache@v1
+        with:
+          path: 'C:\Users\runneradmin\AppData\Local\Programs\stack'
+          key: ghc-cache-Windows-2
 
       - name: Build
         run: |
@@ -216,7 +222,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 'v${{ steps.read_version.outputs.version }}'
+          tag_name: v${{ steps.read_version.outputs.version }}
           release_name: Release v${{ steps.read_version.outputs.version }}
           draft: false
           prerelease: false
@@ -287,6 +293,10 @@ jobs:
           stack-no-global: true
           stack-version: latest
 
-      # - name: Publish to Hackage
-      #   run: |
-      #     echo "TODO"
+      - name: Publish to Hackage
+        env:
+          HACKAGE_USERNAME: ${{ secrets.hackage_username }}
+          HACKAGE_PASSWORD: ${{ secrets.hackage_password }}
+        run: |
+          stack config set save-hackage-creds false
+          stack upload .
