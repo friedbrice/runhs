@@ -14,10 +14,12 @@ packages:
 
 module Main (main) where
 
-import Data.ByteString.Char8 (pack)
+import Data.Foldable
+
 import Data.FileEmbed (embedStringFile)
-import Data.Foldable (fold)
 import Data.Yaml (decodeThrow, parseMaybe, withObject, (.:), (.:?))
+
+import qualified Data.ByteString.Char8 as BS
 
 import qualified System.Console.Terminal.Size as Sys
 import qualified System.Environment as Sys
@@ -38,7 +40,7 @@ data RunSpec = RunSpec
 spec :: FilePath -> IO RunSpec
 spec path = do
     let readHeader =
-            decodeThrow . pack
+            decodeThrow . BS.pack
             . unlines
             . snd . break (/= "{-")
             . fst . break (== "-}")
@@ -73,8 +75,9 @@ main = do
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
         "script":file:args' -> script args' =<< spec file
-        x:_ | x `elem` ["--version", "-version", "-v"] -> version
-            | x `elem` ["--help", "-help", "-h"] -> help Nothing
+        arg1:_
+            | arg1 `elem` ["--version", "-version", "-v"] -> version
+            | arg1 `elem` ["--help", "-help", "-h"] -> help Nothing
         _ -> help (Just "Unable to parse the command-line arguments.")
 
 runProcess :: Sys.CreateProcess -> IO ()
@@ -92,7 +95,7 @@ watch args spec = runProcess $
         , "ghcid"
         , "--"
         , "--command"
-        , unwords $ "stack" : "repl" : stackArgs spec
+        , "'" <> (unwords $ "stack" : "repl" : stackArgs spec) <> "'"
         ]
         <> args
 
@@ -127,7 +130,7 @@ help errMaybe = do
 
 version :: IO ()
 version =
-    mapM_ putStrLn
+    traverse_ putStrLn
     . ("runhs" :)
     . filter (\ln -> take 8 ln == "version:" || take 10 ln == "copyright:")
     . lines
