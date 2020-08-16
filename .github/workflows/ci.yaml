@@ -52,12 +52,6 @@ jobs:
           stack-no-global: true
           stack-version: latest
 
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: cache-compat-${{ matrix.resolver }}-stack
-
       - name: Build
         run: |
           stack clean
@@ -79,12 +73,6 @@ jobs:
           enable-stack: true
           stack-no-global: true
           stack-version: latest
-
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: ~/.stack
-          key: cache-linux-stack
 
       - name: Build
         run: |
@@ -123,12 +111,6 @@ jobs:
           stack-no-global: true
           stack-version: latest
 
-      # - name: Cache Stack directory
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ~/.stack
-      #     key: cache-mac-stack
-
       - name: Build
         run: |
           stack clean
@@ -165,18 +147,6 @@ jobs:
           enable-stack: true
           stack-no-global: true
           stack-version: latest
-
-      - name: Cache Stack directory
-        uses: actions/cache@v1
-        with:
-          path: 'C:\Users\runneradmin\AppData\Roaming\stack'
-          key: cache-windows-stack
-
-      - name: Cache GHC
-        uses: actions/cache@v1
-        with:
-          path: 'C:\Users\runneradmin\AppData\Local\Programs\stack'
-          key: cache-windows-ghc
 
       - name: Build
         run: |
