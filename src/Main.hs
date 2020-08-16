@@ -47,7 +47,8 @@ spec path = do
     header <- readHeader =<< readFile path
     (resolver, packages) <-
         maybe
-            (help $ unwords ["Unable to parse the front matter in", path, "."])
+            (help . Just . unwords $
+                ["Unable to parse the front matter in", path, "."])
             pure
         . flip parseMaybe header
         . withObject "header"
@@ -72,7 +73,9 @@ main = do
         "repl":file:_ -> repl =<< spec file
         "compile":file:_ -> compile =<< spec file
         "script":file:args' -> script args' =<< spec file
-        _ -> help "Unable to parse the command-line arguments."
+        x:_ | x `elem` ["--version", "-version", "-v"] -> version
+            | x `elem` ["--help", "-help", "-h"] -> help Nothing
+        _ -> help (Just "Unable to parse the command-line arguments.")
 
 runProcess :: Sys.CreateProcess -> IO ()
 runProcess process = do
@@ -105,15 +108,27 @@ script :: [String] -> RunSpec -> IO ()
 script args spec = runProcess $
     Sys.proc "stack" ("runhaskell" : stackArgs spec <> args)
 
-help :: String -> IO a
-help reason = do
+help :: Maybe String -> IO a
+help errMaybe = do
+    version
     n <- min 72 . maybe 72 Sys.width <$> Sys.size
 
     putStrLn (replicate n '~')
     Text.putStrLn
-        $ Text.wrapText (Text.WrapSettings True False) n
+        . Text.wrapText (Text.WrapSettings True False) n
         $ Text.pack $(embedStringFile "README.md")
     putStrLn (replicate n '~')
 
-    putStrLn $ unwords ["runhs:", reason, "Please see \"Usage\" above."]
-    Sys.exitWith (Sys.ExitFailure 1)
+    case errMaybe of
+        Nothing -> Sys.exitWith Sys.ExitSuccess
+        Just err -> do
+            putStrLn $ unwords ["runhs:", err, "Please see \"Usage\" above."]
+            Sys.exitWith (Sys.ExitFailure 1)
+
+version :: IO ()
+version =
+    mapM_ putStrLn
+    . ("runhs" :)
+    . filter (\ln -> take 8 ln == "version:" || take 10 ln == "copyright:")
+    . lines
+    $ $(embedStringFile "runhs.cabal")

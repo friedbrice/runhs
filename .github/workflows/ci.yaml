@@ -298,5 +298,4 @@ jobs:
           HACKAGE_USERNAME: ${{ secrets.hackage_username }}
           HACKAGE_PASSWORD: ${{ secrets.hackage_password }}
         run: |
-          stack config set save-hackage-creds false
           stack upload .
