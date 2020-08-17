@@ -21,7 +21,7 @@ jobs:
 
       - name: Version is increasing
         run: |
-          HEAD_VERSION=$(cat runhs.cabal | grep ^version | cut -d' ' -f2)
+          HEAD_VERSION=$(cat runhs.cabal | grep '^version' | cut -d ':' -f 2 | tr -d '[:space:]')
           RELEASE_VERSION=$(git describe --tags | cut -d'-' -f1 | cut -d'v' -f2)
           [[ $HEAD_VERSION > $RELEASE_VERSION ]]
 
@@ -56,7 +56,7 @@ jobs:
         run: |
           stack clean
           stack build --resolver ${{ matrix.resolver }}
-          stack test --resolver ${{ matrix.resolver }}
+          TEST_RESOLVER=${{ matrix.resolver }} stack test --resolver ${{ matrix.resolver }}
 
   Linux:
     name: Linux
