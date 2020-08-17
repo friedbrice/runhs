@@ -80,7 +80,8 @@ test resolver = hspec $ do
         it "should load in compile mode" $ do
             (status, out, err) <- runhs resolver Compile helloHaskell [] ""
             status `shouldBe` Sys.ExitSuccess
-            out `shouldContain` "Linking test/resources/hello-haskell"
+            out `shouldContain` "Compiling Main"
+            out `shouldContain` "hello-haskell.hs"
             err `shouldContain` unwords ["Selected resolver:", resolver]
             Sys.removePathForcibly "test/resources/hello-haskell.o"
             Sys.removePathForcibly "test/resources/hello-haskell.hi"
