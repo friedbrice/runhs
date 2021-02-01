@@ -38,9 +38,9 @@ jobs:
     strategy:
       matrix:
         resolver:
+          - lts-17
           - lts-16
           - lts-14
-          - lts-12
     steps:
       - name: Checkout
         uses: actions/checkout@v2

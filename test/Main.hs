@@ -52,7 +52,7 @@ test resolver = hspec $ do
             out `shouldContain` "greet :: [String] -> [IO ()]"
             err `shouldContain` unwords ["Selected resolver:", resolver]
 
-        -- broken in CI. works on my machine. i don't have time for this shit.
+        -- broken in CI. works on my machine. i don't have time for this ****.
         -- it "should load in watch mode" $ do
         --     (_, out, err) <- runhs resolver Watch helloHaskell ["--allow-eval"] ""
         --     -- Ghcid exits with success on Windows, with error on Unix.
