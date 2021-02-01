@@ -52,9 +52,7 @@ runhs (watch|repl|script|compile) <file> [<args>]
 
 ## Copyright and License
 
-Copyright Daniel Brice (c) 2020
-
-All rights reserved.
+Copyright (C) 2020-2021 Daniel Brice
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
