@@ -80,36 +80,32 @@ main = do
             | arg1 `elem` ["--help", "-help", "-h"] -> help Nothing
         _ -> help (Just "Unable to parse the command-line arguments.")
 
-runProcess :: Sys.CreateProcess -> IO ()
-runProcess process = do
-    (_, _, _, h) <- Sys.createProcess process
+runStack :: [String] -> IO ()
+runStack args = do
+    (_, _, _, h) <- Sys.createProcess $ Sys.proc "stack" args
     code <- Sys.waitForProcess h
     Sys.exitWith code
 
 watch :: [String] -> RunSpec -> IO ()
-watch args spec = runProcess $
-    Sys.proc "stack" $
-        [ "exec"
-        , "--resolver"
-        , resolver spec
-        , "ghcid"
-        , "--"
-        , "--command"
-        , "'" <> (unwords $ "stack" : "repl" : stackArgs spec) <> "'"
-        ]
-        <> args
+watch args spec = runStack $
+    [ "exec"
+    , "--resolver"
+    , resolver spec
+    , "ghcid"
+    , "--"
+    , "--command"
+    , "'" <> (unwords $ "stack" : "repl" : stackArgs spec) <> "'"
+    ]
+    <> args
 
 repl :: RunSpec -> IO ()
-repl spec = runProcess $
-    Sys.proc "stack" ("repl" : stackArgs spec)
+repl spec = runStack ("repl" : stackArgs spec)
 
 compile :: RunSpec -> IO ()
-compile spec = runProcess $
-    Sys.proc "stack" ("ghc" : stackArgs spec)
+compile spec = runStack ("ghc" : stackArgs spec)
 
 script :: [String] -> RunSpec -> IO ()
-script args spec = runProcess $
-    Sys.proc "stack" ("runhaskell" : stackArgs spec <> args)
+script args spec = runStack ("runhaskell" : stackArgs spec <> args)
 
 help :: Maybe String -> IO a
 help errMaybe = do
