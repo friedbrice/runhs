@@ -118,7 +118,7 @@ help errMaybe = do
 
     putStrLn (replicate n '~')
     Text.putStrLn
-        . Text.wrapText (Text.WrapSettings True False) n
+        . Text.wrapText Text.defaultWrapSettings {Text.preserveIndentation = True} n
         $ Text.pack $(embedStringFile "README.md")
     putStrLn (replicate n '~')
 
